@@ -1,50 +1,37 @@
-import data from './data'
+import {BrowserRouter, Link, Route} from "react-router-dom";
+import ProductScreen from "./Screens/ProductScreen";
+import HomeScreen from "./Screens/HomeScreen";
+import CartScreen from "./Screens/CartScreen";
+import {useSelector} from "react-redux";
 
 function App() {
+    const cart = useSelector(state => state.cart);
+    const {cartItems} = cart;
     return (
+        <BrowserRouter>
         <div className="grid-container">
             <header className="row">
                 <div>
-                    <a className="brand" href="/">amazona</a>
+                    <Link className="brand" to="/">amazona</Link>
                 </div>
                 <div>
-                    <a href="/cart">Cart</a>
-                    <a href="/signIn">Sign In</a>
+                    <Link to="/cart">Cart
+                        {cartItems.length >0 && (
+                            <span className="badge">{cartItems.length}</span>
+                        )}</Link>
+                    <Link to="/signIn">Sign In</Link>
                 </div>
             </header>
             <main>
-                <div className="row center">
-                    {
-                        data.products.map(product => (
-                            <div key={product._id} className="card">
-                                <a href={`/product/${product._id}`}>
-                                    <img className="medium" src={product.image} alt={product.name}/>
-                                </a>
-                                <div className="card-body">
-                                    <a href={`/product/${product._id}`}>
-                                        <h2>{product.name}</h2>
-                                    </a>
-                                    <div className="rating">
-                                        <span><i className="fa fa-star"/></span>
-                                        <span><i className="fa fa-star"/></span>
-                                        <span><i className="fa fa-star"/></span>
-                                        <span><i className="fa fa-star"/></span>
-                                        <span><i className="fa fa-star-half-o"/></span>
-                                    </div>
-                                    <div className="price">
-                                        ${product.price}
-                                    </div>
-                                </div>
-                            </div>
-                        ))
-                    }
-
-                </div>
+                <Route path="/cart/:id?" component={CartScreen}></Route>
+                <Route path="/product/:id" component={ProductScreen}></Route>
+                <Route path="/" component={HomeScreen} exact></Route>
             </main>
             <footer className="row center">
                 All rights reserved
             </footer>
         </div>
+        </BrowserRouter>
     );
 }
 
