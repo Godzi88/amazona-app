@@ -15,13 +15,15 @@ mongoose.connect(process.env.MONGODB_URL || 'mongodb://localhost/amazona',{
     useUnifiedTopology: true,
     useCreateIndex: true
 })
-
 app.use('/api/users', userRouter);
 app.use('/api/products', productRouter);
 app.use('/api/orders', orderRouter);
 app.get('/', ((req, res) => {
     res.send('Server is ready');
 }))
+app.get('/api/config/paypal', (req, res) => {
+    res.send(process.env.PAYPAL_CLIENT_ID || 'sandbox');
+})
 
 app.use((err,req,res,next) => {
     res.status(500).send({message:err.message});
