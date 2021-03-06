@@ -11,6 +11,11 @@ import PaymentMethodScreen from "./Screens/PaymentMethodScreen";
 import PlaceOrderScreen from "./Screens/PlaceOrderScreen";
 import OrderScreen from "./Screens/OrderScreen";
 import OrderHistoryScreen from "./Screens/OrderHistoryScreen";
+import ProfileScreen from "./Screens/ProfileScreen";
+import PrivateRoute from "./Components/PrivateRoute";
+import AdminRoute from "./Components/AdminRoute";
+import ProductListScreen from "./Screens/ProductListScreen";
+import ProductEditScreen from "./Screens/ProductEditScreen";
 
 function App() {
     const cart = useSelector(state => state.cart);
@@ -40,6 +45,9 @@ function App() {
                                     </Link>
                                     <ul className="dropdown-content">
                                         <li>
+                                            <Link to="/profile">User Profile</Link>
+                                        </li>
+                                        <li>
                                             <Link to="/orderhistory">Order History</Link>
                                         </li>
                                         <li>
@@ -50,12 +58,29 @@ function App() {
                                 </div>
                                 : <Link to="/signIn">Sign In</Link>
                         }
+                        {userInfo && userInfo.isAdmin && (
+                            <div className="dropdown">
+                                <Link to="#admin">Admin<i className="fa fa-caret-down"/></Link>
+                                <ul className="dropdown-content">
+                                    <li>
+                                        <Link to="/dashboard">Dashboard</Link>
+                                    </li><li>
+                                        <Link to="/productList">Products</Link>
+                                    </li><li>
+                                        <Link to="/orderList">Orders</Link>
+                                    </li><li>
+                                        <Link to="/userList">Users</Link>
+                                    </li>
+                                </ul>
+                            </div>
+                        )}
 
                     </div>
                 </header>
                 <main>
                     <Route path="/cart/:id?" component={CartScreen}/>
-                    <Route path="/product/:id" component={ProductScreen}/>
+                    <Route path="/product/:id" component={ProductScreen} exact/>
+                    <Route path="/product/:id/edit" component={ProductEditScreen} exact/>
                     <Route path="/signin" component={SigninScreen}/>
                     <Route path="/register" component={RegisterScreen}/>
                     <Route path="/shipping" component={ShippingAddressScreen}/>
@@ -63,6 +88,8 @@ function App() {
                     <Route path="/placeorder" component={PlaceOrderScreen}/>
                     <Route path="/order/:id" component={OrderScreen}/>
                     <Route path="/orderhistory" component={OrderHistoryScreen}/>
+                    <PrivateRoute path="/profile" component={ProfileScreen}/>
+                    <AdminRoute path="/productList" component={ProductListScreen}/>
                     <Route path="/" component={HomeScreen} exact/>
                 </main>
                 <footer className="row center">
