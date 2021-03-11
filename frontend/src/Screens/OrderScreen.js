@@ -3,10 +3,10 @@ import {useDispatch, useSelector} from "react-redux";
 import {Link} from "react-router-dom";
 import LoadingBox from "../Components/LoadingBox";
 import MessageBox from "../Components/MessageBox";
-import {detailsOrder, payOrder} from "../Actions/orderActions";
+import {deliverOrder, detailsOrder, payOrder} from "../Actions/orderActions";
 import Axios from "axios";
 import {PayPalButton} from "react-paypal-button-v2";
-import {ORDER_PAY_RESET} from "../Constants/orderConstants";
+import {ORDER_DELIVER_RESET, ORDER_PAY_RESET} from "../Constants/orderConstants";
 
 export default function OrderScreen(props) {
     const orderId = props.match.params.id;
@@ -16,6 +16,10 @@ export default function OrderScreen(props) {
     const orderPay = useSelector(state => state.orderPay);
     const {loading: loadingPay, error: errorPay, success: successPay} = orderPay;
     const dispatch = useDispatch();
+    const userSignin = useSelector((state)=>state.userSignin);
+    const {userInfo} = userSignin;
+    const orderDeliver= useSelector(state => state.orderDeliver);
+    const {loading: loadingDeliver, error: errorDeliver, success: successDeliver} = orderDeliver;
 
     useEffect(() => {
 
@@ -30,8 +34,9 @@ export default function OrderScreen(props) {
             }
             document.body.appendChild(script);
         };
-        if (!order || successPay || (order && order._id !== orderId)) {
+        if (!order || successPay || successDeliver || (order && order._id !== orderId)) {
             dispatch({type:ORDER_PAY_RESET});
+            dispatch({type:ORDER_DELIVER_RESET});
             dispatch(detailsOrder(orderId))
         } else {
             if (!order.isPaid) {
@@ -44,11 +49,16 @@ export default function OrderScreen(props) {
         }
 
 
-    }, [dispatch, order, orderId, sdkReady, successPay]);
+    }, [dispatch, order, orderId, sdkReady, successPay, successDeliver]);
 
     const successPaymentHandler = (paymentResult) => {
         dispatch(payOrder(order, paymentResult));
     }
+
+    const deliverHandler = () => {
+        dispatch(deliverOrder(order._id));
+    }
+
     return loading ? <LoadingBox/> :
         error ? (<MessageBox variant="danger">{error}</MessageBox>)
             : (
@@ -153,6 +163,13 @@ export default function OrderScreen(props) {
                                             </li>
                                         )
                                     }
+                                    {userInfo.isAdmin && order.isPaid && !order.isDelivered && (
+                                        <li>
+                                            <button type="button"
+                                                    className="primary block"
+                                                    onClick={deliverHandler}>Deliver Order</button>
+                                        </li>
+                                    )}
                                 </ul>
                             </div>
                         </div>
