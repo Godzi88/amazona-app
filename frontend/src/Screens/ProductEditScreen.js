@@ -23,10 +23,13 @@ export default function ProductEditScreen(props) {
 
     useEffect(() => {
 
+        if (successUpdate) {
+            props.history.push('/productlist');
+        }
+
         if (!product || (product._id !== productId) || successUpdate) {
             dispatch({type: PRODUCT_UPDATE_RESET});
             dispatch(detailsProduct(productId))
-            props.history.push('/productList');
         } else {
             setName(product.name)
             setPrice(product.price)

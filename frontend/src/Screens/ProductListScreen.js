@@ -1,9 +1,9 @@
 import React, {useEffect} from 'react'
 import {useDispatch, useSelector} from "react-redux";
-import {createProduct, listProducts} from "../Actions/productActions";
+import {createProduct, deleteProduct, listProducts} from "../Actions/productActions";
 import LoadingBox from "../Components/LoadingBox";
 import MessageBox from "../Components/MessageBox";
-import {PRODUCT_CREATE_RESET} from "../Constants/productConstants";
+import {PRODUCT_CREATE_RESET, PRODUCT_DELETE_RESET} from "../Constants/productConstants";
 
 export default function ProductListScreen(props) {
     const productList = useSelector(state => state.productList);
@@ -12,15 +12,27 @@ export default function ProductListScreen(props) {
     const {loading:loadingCreate, error:errorCreate, success:successCreate, product:createdProduct} = productCreate;
     const dispatch = useDispatch();
 
+    const productDelete = useSelector((state)=> state.deleteProduct);
+
+    const {
+        loading:loadingDelete,
+        error:errorDelete,
+        success: successDelete
+    } = productDelete;
     useEffect(() => {
         if(successCreate){
             dispatch({type: PRODUCT_CREATE_RESET});
             props.history.push(`/product/${createdProduct._id}/edit`)
         }
+        if(successDelete){
+            dispatch({type: PRODUCT_DELETE_RESET})
+        }
         dispatch(listProducts());
-    },[createdProduct, dispatch, props.history, successCreate])
-    const deleteHandler = () =>{
-        // TODO: dispath delete product action
+    },[createdProduct, dispatch, props.history, successCreate, successDelete])
+    const deleteHandler = (product) =>{
+        if(window.confirm('Are you sure to delete?')){
+            dispatch(deleteProduct(product));
+        }
     }
     const createProductHandler =() => {
         dispatch(createProduct());
@@ -35,7 +47,9 @@ export default function ProductListScreen(props) {
                 >Create Product</button>
             </div>
             {loadingCreate && <LoadingBox/>}
-            {errorCreate && <MessageBox variant="danger">{errorCreate}</MessageBox>}
+            {errorCreate && <MessageBox variant="danger">{errorDelete}</MessageBox>}
+            {loadingDelete && <LoadingBox/>}
+            {errorDelete && <MessageBox variant="danger">{errorDelete}</MessageBox>}
             {loading ? <LoadingBox/>
                 : error ? <MessageBox variant="danger">{error}</MessageBox>
                     : <table className="table">

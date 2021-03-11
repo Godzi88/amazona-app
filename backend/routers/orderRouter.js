@@ -1,6 +1,6 @@
 import express from 'express';
 import Order from "../models/orderModel.js";
-import {isAuth} from "../utils.js";
+import {isAdmin, isAuth} from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 
 const orderRouter = express.Router();
@@ -61,4 +61,18 @@ orderRouter.put('/:id/pay', isAuth, expressAsyncHandler(async (req, res) => {
     }
 }))
 
+orderRouter.get('/', isAuth, isAdmin, expressAsyncHandler(async (req, res) => {
+    const orders = await Order.find({}).populate('user', 'name');
+    res.send(orders);
+}))
+
+orderRouter.delete('/:id', isAuth, isAdmin, expressAsyncHandler(async(req, res)=> {
+    const order = await Order.findById(req.params.id);
+    if(order){
+        const deletedOrder = await order.remove();
+        res.send({message: 'Order Deleted', order: deletedOrder});
+    }else {
+        res.status(404).send({message: 'Order Not Found'});
+    }
+}))
 export default orderRouter;
