@@ -21,9 +21,7 @@ app.use('/api/uploads', uploadRouter);
 app.use('/api/users', userRouter);
 app.use('/api/products', productRouter);
 app.use('/api/orders', orderRouter);
-app.use(express.static(path.join(__dirname, '/frontend/build')));
-app.get('*', (req, res) =>
-    res.sendFile.join(__dirname, '/frontend/build/index.html'))
+
 // app.get('/', ((req, res) => {
 //     res.send('Server is ready');
 // }))
@@ -31,6 +29,9 @@ app.get('/api/config/paypal', (req, res) => {
     res.send(process.env.PAYPAL_CLIENT_ID || 'sandbox');
 })
 const __dirname = path.resolve();
+app.use(express.static(path.join(__dirname, '/frontend/build')));
+app.get('*', (req, res) =>
+    res.sendFile.join(__dirname, '/frontend/build/index.html'))
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')))
 app.use((err, req, res, next) => {
     res.status(500).send({message: err.message});
