@@ -19,13 +19,14 @@ export default function OrderListScreen(props) {
     }, [dispatch, successOrderDelete])
 
     const deleteHandler = (order) => {
-        if(window.confirm('Are you sure to delete?')){
+        if(window.confirm('Are you sure you want to delete this order?')){
             dispatch(deleteOrder(order._id))
         }
     }
     return (
         <div>
             <h1>Orders</h1>
+            {successOrderDelete && <MessageBox variant="success">Order successfully deleted</MessageBox>}
             {loadingOrderDelete && <LoadingBox/>}
             {errorOrderDelete && <MessageBox variant="danger">{errorOrderDelete}</MessageBox>}
             {loading ? <LoadingBox/> :
