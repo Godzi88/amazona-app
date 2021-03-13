@@ -11,7 +11,7 @@ export default function OrderListScreen(props) {
     const {loading, error, orders} = orderList;
     const dispatch = useDispatch();
     const orderDelete = useSelector(state => state.orderDelete);
-    const {loading:loadingOrderDelete, error:errorOrderDelete, success: successOrderDelete} = orderDelete;
+    const {loading: loadingOrderDelete, error: errorOrderDelete, success: successOrderDelete} = orderDelete;
 
     useEffect(() => {
         dispatch({type: ORDER_DELETE_RESET})
@@ -19,7 +19,7 @@ export default function OrderListScreen(props) {
     }, [dispatch, successOrderDelete])
 
     const deleteHandler = (order) => {
-        if(window.confirm('Are you sure you want to delete this order?')){
+        if (window.confirm('Are you sure you want to delete this order?')) {
             dispatch(deleteOrder(order._id))
         }
     }
@@ -34,13 +34,15 @@ export default function OrderListScreen(props) {
                     : (
                         <table className="table">
                             <thead>
-                            <th>ID</th>
-                            <th>USER</th>
-                            <th>DATE</th>
-                            <th>TOTAL</th>
-                            <th>PAID</th>
-                            <th>DELIVERED</th>
-                            <th>ACTIONS</th>
+                            <tr>
+                                <th>ID</th>
+                                <th>USER</th>
+                                <th>DATE</th>
+                                <th>TOTAL</th>
+                                <th>PAID</th>
+                                <th>DELIVERED</th>
+                                <th>ACTIONS</th>
+                            </tr>
                             </thead>
                             <tbody>
                             {orders.map((order) => (
@@ -58,7 +60,8 @@ export default function OrderListScreen(props) {
                                                 }}>Details
                                         </button>
                                         <button type="button" className="small" onClick={() => deleteHandler(order)}>
-                                        Delete</button>
+                                            Delete
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
