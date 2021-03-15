@@ -18,6 +18,7 @@ import ProductListScreen from "./Screens/ProductListScreen";
 import ProductEditScreen from "./Screens/ProductEditScreen";
 import OrderListScreen from "./Screens/OrderListScreen";
 import UserListScreen from "./Screens/UserListScreen";
+import UserEditScreen from "./Screens/UserEditScreen";
 
 function App() {
     const cart = useSelector(state => state.cart);
@@ -94,6 +95,7 @@ function App() {
                     <AdminRoute path="/productList" component={ProductListScreen}/>
                     <AdminRoute path="/orderList" component={OrderListScreen}/>
                     <AdminRoute path="/userList" component={UserListScreen}/>
+                    <AdminRoute path="/user/:id/edit" component={UserEditScreen}/>
                     <Route path="/" component={HomeScreen} exact/>
                 </main>
                 <footer className="row center">
